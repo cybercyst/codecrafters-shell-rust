@@ -2,6 +2,8 @@
 use std::io::{self, Write};
 use std::process::exit;
 
+const BUILTIN_FNS: [&str; 3] = ["exit", "echo", "type"];
+
 fn main() -> ! {
     loop {
         print!("$ ");
@@ -20,6 +22,17 @@ fn main() -> ! {
             "echo" => {
                 let msg = tokens.clone().collect::<Vec<&str>>().join(" ");
                 println!("{}", msg);
+            }
+            "type" => {
+                for token in tokens {
+                    let msg = match token {
+                        x if BUILTIN_FNS.iter().any(|&i| i == x) => {
+                            format!("{} is a shell builtin", x)
+                        }
+                        _ => format!("{} not found", token),
+                    };
+                    println!("{}", msg);
+                }
             }
             _ => {
                 eprintln!("{}: command not found", token);
