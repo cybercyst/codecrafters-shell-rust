@@ -1,8 +1,24 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
-use std::process::exit;
+use std::{env, fs, process::exit};
 
 const BUILTIN_FNS: [&str; 3] = ["exit", "echo", "type"];
+
+fn lookup_executable(executable: &str) -> String {
+    let path_env = env::var("PATH").unwrap();
+    println!("{}", path_env);
+    let paths = path_env.split(':');
+
+    for path in paths {
+        println!("{}", path);
+        let mut contents = fs::read_dir(path).unwrap();
+        if contents.any(|file| file.unwrap().file_name() == executable) {
+            return format!("{} is {}/{}", executable, path, executable);
+        }
+    }
+
+    format!("{}: command not found", executable)
+}
 
 fn main() -> ! {
     loop {
@@ -16,7 +32,7 @@ fn main() -> ! {
         let token = tokens.next().unwrap();
         match token {
             "exit" => {
-                let exit_code = tokens.next().unwrap_or("0").parse::<i32>().unwrap();
+                let exit_code = tokens.next().unwrap_or("0").parse::<i32>().unwrap_or(0);
                 exit(exit_code)
             }
             "echo" => {
@@ -29,7 +45,7 @@ fn main() -> ! {
                         x if BUILTIN_FNS.iter().any(|&i| i == x) => {
                             format!("{} is a shell builtin", x)
                         }
-                        _ => format!("{} not found", token),
+                        _ => lookup_executable(token),
                     };
                     println!("{}", msg);
                 }
