@@ -19,7 +19,7 @@ fn main() -> ! {
                 }
                 _ => {
                     eprintln!("{}: command not found", token);
-                    exit(1);
+                    break;
                 }
             }
         }
