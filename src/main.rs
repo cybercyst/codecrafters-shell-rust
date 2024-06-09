@@ -15,7 +15,7 @@ fn lookup_executable(executable: &str) -> String {
         }
     }
 
-    format!("{}: command not found", executable)
+    format!("{}: not found", executable)
 }
 
 fn main() -> ! {
