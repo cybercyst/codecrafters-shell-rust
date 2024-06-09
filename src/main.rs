@@ -6,11 +6,9 @@ const BUILTIN_FNS: [&str; 3] = ["exit", "echo", "type"];
 
 fn lookup_executable(executable: &str) -> String {
     let path_env = env::var("PATH").unwrap();
-    println!("{}", path_env);
     let paths = path_env.split(':');
 
     for path in paths {
-        println!("{}", path);
         let mut contents = fs::read_dir(path).unwrap();
         if contents.any(|file| file.unwrap().file_name() == executable) {
             return format!("{} is {}/{}", executable, path, executable);
