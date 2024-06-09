@@ -2,7 +2,7 @@ use std::{
     env,
     io::{self, Write},
     path::PathBuf,
-    process::exit,
+    process::{exit, Command},
 };
 
 use crate::{builtins::Builtins, utils::find_path};
@@ -73,9 +73,19 @@ impl Shell {
                 }
             }
             _ => match find_path(self.paths.clone(), String::from(token)) {
-                Some(path) => println!("{}", path.to_str().unwrap()),
+                Some(cmd) => self.exec(
+                    String::from(cmd.to_str().unwrap()),
+                    token_iter.collect::<Vec<&String>>(),
+                ),
                 None => eprintln!("{}: command not found", token),
             },
         }
+    }
+
+    fn exec(&self, cmd: String, args: Vec<&String>) {
+        _ = Command::new(cmd)
+            .args(args)
+            .status()
+            .expect("process failed to start");
     }
 }
