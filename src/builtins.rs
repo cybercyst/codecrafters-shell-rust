@@ -9,7 +9,6 @@ impl Builtins {
     }
 
     pub fn r#type(paths: Vec<PathBuf>, cmd: &String) {
-        dbg!(paths.clone());
         let msg = match cmd {
             x if ["echo", "type", "exit"].iter().any(|&i| i == x) => {
                 format!("{} is a shell builtin", x)
