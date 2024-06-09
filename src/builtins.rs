@@ -15,7 +15,7 @@ impl Builtins {
             }
             _ => match find_path(paths, cmd.clone()) {
                 Some(path) => format!("{} is {}", cmd, path.to_str().unwrap()),
-                None => format!("{}: command not found", cmd),
+                None => format!("{}: not found", cmd),
             },
         };
         println!("{}", msg)
