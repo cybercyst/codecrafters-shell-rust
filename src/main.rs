@@ -11,16 +11,18 @@ fn main() -> ! {
         stdin.read_line(&mut input).unwrap();
 
         let mut tokens = input.trim().split(' ');
-        while let Some(token) = tokens.next() {
-            match token {
-                "exit" => {
-                    let exit_code = tokens.next().unwrap().parse::<i32>().unwrap();
-                    exit(exit_code)
-                }
-                _ => {
-                    eprintln!("{}: command not found", token);
-                    break;
-                }
+        let token = tokens.next().unwrap();
+        match token {
+            "exit" => {
+                let exit_code = tokens.next().unwrap_or("0").parse::<i32>().unwrap();
+                exit(exit_code)
+            }
+            "echo" => {
+                let msg = tokens.clone().collect::<Vec<&str>>().join(" ");
+                println!("{}", msg);
+            }
+            _ => {
+                eprintln!("{}: command not found", token);
             }
         }
     }
